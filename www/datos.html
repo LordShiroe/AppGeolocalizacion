@@ -1,35 +1,54 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-        <title></title>
-        <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-        <link href="css/style.css" rel="stylesheet">
-        <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
         <link href="css/ionic.app.css" rel="stylesheet">
         -->
-        <!-- ionic/angularjs js -->
-        <script src="lib/ionic/js/ionic.bundle.js"></script>
-        <!-- ngCookie js -->
-        <script type="text/javascript" src="lib/angular-cookies/angular-cookies.js"></script>
-        <!-- ngCordova -->
-        <script src="lib/ngCordova/dist/ng-cordova.js"></script>
-        <!-- cordova script (this will be a 404 during development) -->
-        <script src="cordova.js"></script>
-        <!-- your app's js -->
-        <script src="js/app.js"></script>
-    </head>
-    <body ng-app="starter">
-        <ion-pane>
+    <!--Mapas de google-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGYN0fzFT8ez99-WRpKnV0g38m9OFGdhc"></script>
+    <!-- ionic/angularjs js -->
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <!-- ngCookie js -->
+    <script type="text/javascript" src="lib/angular-cookies/angular-cookies.js"></script>
+    <!-- ngCordova -->
+    <script src="lib/ngCordova/dist/ng-cordova.js"></script>
+    <!-- cordova script (this will be a 404 during development) -->
+    <script src="cordova.js"></script>
+    <!-- your app's js -->
+    <script src="js/app.js"></script>
+</head>
+
+<body ng-app="starter" ng-controller="BarcodeCtrl">
+    <ion-pane>
         <ion-header-bar class="bar-stable">
-        <h1 class="title">Codigo QR</h1>
+            <h1 class="title">Codigo QR</h1>
         </ion-header-bar>
-        <ion-content ng-controller="BarcodeCtrl">
-        <button class="button button-block button-calm" ng-click="scanBarcode()">Escanear</button>
-        <img width="384" height="161" title="" alt="" class="image" >
+        <ion-grid>
+            <ion-row>
+                <ion-col col-12 col-sm-9 col-md-6 col-lg-4 col-xl-3>
+                    <button style="margin-top:50px !important;" class="button button-block button-calm" ng-click="scanBarcode()">Escanear</button>
+                </ion-col>
+            </ion-row>
+            <!--<ion-row>
+                <ion-col col-12 col-sm-9 col-md-6 col-lg-4 col-xl-3>
+                    <h3><b>Lista de Lugares Visitados</b></h3>
+                    <div style="margin-top:50px !important;" id="map"></div>
+                </ion-col>
+            </ion-row>-->
+            <ion-row>
+                <ion-col col-12 col-sm-9 col-md-6 col-lg-4 col-xl-3>
+                    <img style="margin-top:30px !important;" width="384" height="161" title="" alt="" class="image">
+                </ion-col>
+            </ion-row>
+        </ion-grid>
         <!--<button class="button button-block button-positive" ng-click="localize()">Localizar</button>-->
-        </ion-content>
-        </ion-pane>
-    </body>
+    </ion-pane>
+</body>
+
 </html>

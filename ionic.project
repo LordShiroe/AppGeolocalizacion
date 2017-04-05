@@ -4,7 +4,7 @@
   "proxies": [
     {
       "path": "/api",
-      "proxyUrl": "http://192.168.1.11:81/Geolocalizacion/api"
+      "proxyUrl": "http://190.121.157.26:81/Geolocalizacion/api"
     }
   ]
 }

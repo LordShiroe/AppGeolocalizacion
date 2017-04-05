@@ -70,13 +70,66 @@ app.controller('LoginController', ['$location', '$scope', 'Authentication', func
 
 //Controlador de la aplicación, implementa los plugnis de cordova
 app.controller('BarcodeCtrl', function ($scope, Posts, Authentication, $cordovaBarcodeScanner, $cordovaGeolocation, $ionicLoading, $ionicPlatform) {
-    'use strict';
     $ionicPlatform.ready(function () {
         $scope.localize = localize;
         $scope.latitud = '0';
         $scope.longitud = '0';
         $scope.timestamp = '0';
         $scope.barcode = '0';
+        var vm = this;
+        vm.infowindow = [];
+        vm.marker = [];
+        Posts.getUsers().then(function (json) {
+            console.log(json);
+        });
+        Posts.get("a").then(function (json) {
+            console.log(json);
+            $scope.map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 12,
+                center: {
+                    lat: 7.907500,
+                    lng: -72.504722
+                }
+            });
+            for (var i = 0; i < json.data.length; i++) {
+                var datos = json.data;
+
+                var pos = {
+                    lat: Number(datos[i].latitud),
+                    lng: Number(datos[i].longitud)
+                };
+
+                var contentString = '<div id="content">' +
+                    '<div id="siteNotice">' +
+                    '</div>' +
+                    '<h1 id="firstHeading" class="firstHeading">' + datos[i].author.first_name + ' ' +
+                    datos[i].author.last_name + '</h1>' +
+                    '<div id="bodyContent">' +
+                    '<p><b>Código leído: </b>' + datos[i].barcode + ' </p> <br/>' +
+                    '<p><b>Fecha y hora registrada: </b>' + datos[i].updated_at + ' </p> <br/>' +
+                    '</div>' +
+                    '</div>';
+
+                console.log(contentString);
+                vm.infowindow[i] = (new google.maps.InfoWindow({
+                    content: contentString,
+                    position: pos
+                }));
+                vm.marker[i] = new google.maps.Marker({
+                    position: pos,
+                    map: $scope.map,
+                    label: datos[i].id.toString(),
+                    title: i.toString()
+                });
+                vm.marker[i].addListener('click', function (id) {
+                    console.log(id.ua.target.title);
+                    selected = parseInt(id.ua.target.title);
+                    vm.infowindow[selected].open($scope.map);
+                });
+
+            }
+
+        });
         //Escanea el código QR
         $scope.scanBarcode = function () {
             $cordovaBarcodeScanner.scan().then(function (imageData) {
@@ -210,7 +263,7 @@ function Authentication($cookies, $http, $ionicPopup) {
      * @memberOf thinkster.authentication.services.Authentication
      */
     function login(username, password) {
-        return $http.post('/api/v1/auth/login/', {
+        return $http.post('http://192.121.157.26:81/Geolocalizacion/api/v1/auth/login/', {
             username: username,
             password: password
         }).then(loginSuccessFn, loginErrorFn);
@@ -244,7 +297,7 @@ function Authentication($cookies, $http, $ionicPopup) {
      * @memberOf thinkster.authentication.services.Authentication
      */
     function logout() {
-        return $http.post('/api/v1/auth/logout/')
+        return $http.post('http://192.121.157.26:81/Geolocalizacion/api/v1/auth/logout/')
             .then(logoutSuccessFn, logoutErrorFn);
 
         /**
@@ -278,7 +331,8 @@ function Posts($http) {
     var Posts = {
         all: all,
         create: create,
-        get: get
+        get: get,
+        getUsers: getUsers
     };
 
     return Posts;
@@ -292,7 +346,7 @@ function Posts($http) {
      * @memberOf thinkster.posts.services.Posts
      */
     function all() {
-        return $http.get('/api/v1/posts/');
+        return $http.get('http://192.121.157.26:81/Geolocalizacion/apiv1/posts/');
     }
 
 
@@ -304,12 +358,22 @@ function Posts($http) {
      * @memberOf thinkster.posts.services.Posts
      */
     function create(barcode, latitud, longitud, timestamp) {
-        return $http.post('/api/v1/posts/', {
+        return $http.post('http://192.121.157.26:81/Geolocalizacion/api/v1/posts/', {
             barcode: barcode,
             latitud: latitud,
             longitud: longitud,
             timestamp: timestamp
         });
+    }
+    /**
+     * @name getDate
+     * @desc Get the Posts for the given date
+     * @param {string} date The date to get Posts for
+     * @returns {Promise}
+     * @memberOf thinkster.posts.services.Posts
+     */
+    function getUsers() {
+        return $http.post('http://192.121.157.26:81/Geolocalizacion/api/v1/listUsers/');
     }
 
     /**
@@ -320,7 +384,7 @@ function Posts($http) {
      * @memberOf thinkster.posts.services.Posts
      */
     function get(username) {
-        return $http.get('/api/v1/accounts/' + username + '/posts/');
+        return $http.get('http://192.121.157.26:81/Geolocalizacion/api/v1/accounts/' + username + '/posts/');
     }
 };
 
